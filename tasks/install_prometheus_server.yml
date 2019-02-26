@@ -1,5 +1,9 @@
 ---
 
+- name: Install Docker-py for Python3.
+  pip:
+    name: docker-py==3.7.0
+
 - name: Make sure the Prometheus data directory Docker Volume is present.
   docker_volume:
     name: prometheus-config
