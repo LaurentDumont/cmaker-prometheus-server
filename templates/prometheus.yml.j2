@@ -1,0 +1,56 @@
+###Prometheus config
+global:
+  scrape_interval:     15s # By default, scrape targets every 15 seconds.
+
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels:
+    monitor: 'codelab-monitor'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node-exporter'
+    static_configs:
+    {% for host in servers %}
+      - targets: ['hostvars[host][ansible_host]:9100']
+    {% endfor %}
+
+  - job_name: 'pve'
+    static_configs:
+      - targets:
+        - 10.10.69.11  # bacon VE node.
+        - 10.10.69.12  # morebacon VE node.
+        - 10.10.69.13  # ultrabacon VE node.
+    metrics_path: /pve
+    params:
+      module: [default]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.10.99.9:9221  # PVE exporter.
+
+
+  - job_name: 'junos'
+    scrape_interval: 300s
+    scrape_timeout: 300s
+    static_configs:
+      - targets:
+        - 10.10.69.14  # Target device.
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.10.99.9:9326  # The junos_exporter's real hostname:port.

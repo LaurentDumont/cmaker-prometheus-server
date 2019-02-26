@@ -1,0 +1,29 @@
+---
+
+- name: Make sure the Prometheus data directory Docker Volume is present.
+  docker_volume:
+    name: prometheus-config
+    state: present
+
+- name: Make sure the permissions are correct for the Docker Volume.
+  file:
+    path: /var/lib/docker/volumes/prometheus-config/_data/
+    owner: nobody
+    group: group
+
+- name: Start the Prometheus Docker container and make sure it is running.
+  docker_container:
+    name: prometheus-server
+    image: prom/prometheus
+    state: started
+    restart: yes
+    ports:
+      - "9090:9090"
+    volumes:
+      - "prometheus-config:/etc/prometheus:rw"
+
+- name: Make sure the permissions are correct for the Docker Volume. Again, in case it changed when pulling the container.
+  file:
+    path: /var/lib/docker/volumes/prometheus-config/_data/
+    owner: nobody
+    group: group
