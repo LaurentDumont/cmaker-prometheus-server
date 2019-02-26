@@ -1,3 +1,5 @@
+#jinja2: lstrip_blocks: True
+
 ###Prometheus config
 global:
   scrape_interval:     15s # By default, scrape targets every 15 seconds.
@@ -19,9 +21,10 @@ scrape_configs:
 
   - job_name: 'node-exporter'
     static_configs:
-    {% for host in servers %}
-      - targets: ['hostvars[host][ansible_host]:9100']
-    {% endfor %}
+        - targets: 
+        {% for host in groups['servers'] %}
+            - {{ hostvars[host].ansible_host }}:9100
+        {% endfor %}
 
   - job_name: 'pve'
     static_configs:
