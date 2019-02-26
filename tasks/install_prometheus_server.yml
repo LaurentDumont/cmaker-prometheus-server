@@ -30,4 +30,4 @@
   file:
     path: /var/lib/docker/volumes/prometheus-config/_data/
     owner: nobody
-    group: group
+    group: nogroup
