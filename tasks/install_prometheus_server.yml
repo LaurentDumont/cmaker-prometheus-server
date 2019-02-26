@@ -26,6 +26,11 @@
     volumes:
       - "prometheus-config:/etc/prometheus:rw"
 
+- name: Create the Prometheus server config based on template.
+  template:
+    src: prometheus.yml.j2
+    dest: /var/lib/docker/volumes/prometheus-config/_data/prometheus.yml
+
 - name: Make sure the permissions are correct for the Docker Volume. Again, in case it changed when pulling the container.
   file:
     path: /var/lib/docker/volumes/prometheus-config/_data/
