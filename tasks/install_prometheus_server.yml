@@ -13,7 +13,7 @@
   file:
     path: /var/lib/docker/volumes/prometheus-config/_data/
     owner: nobody
-    group: group
+    group: nogroup
 
 - name: Start the Prometheus Docker container and make sure it is running.
   docker_container:
