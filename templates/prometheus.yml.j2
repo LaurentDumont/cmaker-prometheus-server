@@ -22,7 +22,10 @@ scrape_configs:
   - job_name: 'node-exporter'
     static_configs:
         - targets: 
-        {% for host in groups['servers'] %}
+        {% for host in groups['servers']%}
+            - {{ hostvars[host].ansible_host }}:9100
+        {% endfor %}
+        {% for host in groups['proxmox-servers']%}
             - {{ hostvars[host].ansible_host }}:9100
         {% endfor %}
 
