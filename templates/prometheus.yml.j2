@@ -61,3 +61,23 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 10.10.99.9:9326  # The junos_exporter's real hostname:port.
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    static_configs:
+      - targets:
+        {% for host in groups['servers']%}
+            - {{ hostvars[host].ansible_host }}
+        {% endfor %}
+        {% for host in groups['proxmox-servers']%}
+            - {{ hostvars[host].ansible_host }}
+        {% endfor %}
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.10.99.9:9115  # The blackbox exporter's real hostname:port.
