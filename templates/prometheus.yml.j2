@@ -65,7 +65,7 @@ scrape_configs:
   - job_name: 'blackbox'
     metrics_path: /probe
     params:
-      module: [http_2xx]  # Look for a HTTP 200 response.
+      module: [http_200]  # Look for a HTTP 200 response.
     static_configs:
       - targets:
         {% for host in groups['servers']%}
