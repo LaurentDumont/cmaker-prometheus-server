@@ -9,6 +9,9 @@ global:
   external_labels:
     monitor: 'codelab-monitor'
 
+rule_files:
+  - "alerting.yml"
+
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
@@ -65,7 +68,7 @@ scrape_configs:
   - job_name: 'blackbox'
     metrics_path: /probe
     params:
-      module: [icmp]  # Look for a HTTP 200 response.
+      module: [icmp]
     static_configs:
       - targets:
         {% for host in groups['servers']%}

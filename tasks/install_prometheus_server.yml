@@ -31,6 +31,10 @@
     src: prometheus.yml.j2
     dest: /var/lib/docker/volumes/prometheus-config/_data/prometheus.yml
 
+- name: Create the alerting rules template.
+  template:
+    src: alerting.yml.j2
+    dest: /var/lib/docker/volumes/prometheus-config/_data/alerting.yml
 - name: Make sure the permissions are correct for the Docker Volume. Again, in case it changed when pulling the container.
   file:
     path: /var/lib/docker/volumes/prometheus-config/_data/

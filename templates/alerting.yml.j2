@@ -1,0 +1,10 @@
+groups:
+- name: Node Down
+  rules:
+  - alert: NoPingResponse
+    for: 1m
+    expr: probe_success !=1
+    labels:
+      severity: high
+    annotations:
+      summary: Ping down for {{ $labels.instance }}
