@@ -35,10 +35,9 @@ scrape_configs:
   - job_name: 'pve'
     static_configs:
       - targets:
-        - 10.10.69.11  # bacon PVE node.
-        - 10.10.69.12  # morebacon PVE node.
-        - 10.10.69.13  # ultrabacon PVE node.
-        - 10.10.69.17  # epicbacon PVE node.
+        {% for host in groups['proxmox-servers']%}
+        - {{ hostvars[host].ansible_host }} # PVE Node {{ host }}
+        {% endfor %}
     metrics_path: /pve
     params:
       module: [default]
