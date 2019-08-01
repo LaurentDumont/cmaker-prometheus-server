@@ -25,6 +25,8 @@
       - "9090:9090"
     volumes:
       - "prometheus-config:/etc/prometheus:rw"
+    command:
+      - "--storage.tsdb.retention.time=360d"
 
 - name: Create the Prometheus server config based on template.
   template:
