@@ -26,7 +26,7 @@
     volumes:
       - "prometheus-config:/etc/prometheus:rw"
     command:
-      - "--storage.tsdb.retention.time=360d"
+      - "--storage.tsdb.retention.time=360d --config.file=/etc/prometheus/prometheus.yml"
 
 - name: Create the Prometheus server config based on template.
   template:
