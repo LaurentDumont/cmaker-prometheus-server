@@ -9,9 +9,20 @@
     name: prometheus-config
     state: present
 
+- name: Make sure the Prometheus data directory Docker Volume is present.
+  docker_volume:
+    name: prometheus-data
+    state: present
+
 - name: Make sure the permissions are correct for the Docker Volume.
   file:
     path: /var/lib/docker/volumes/prometheus-config/_data/
+    owner: nobody
+    group: nogroup
+
+- name: Make sure the permissions are correct for the Docker Volume.
+  file:
+    path: /var/lib/docker/volumes/prometheus-data
     owner: nobody
     group: nogroup
 
@@ -25,8 +36,9 @@
       - "9090:9090"
     volumes:
       - "prometheus-config:/etc/prometheus:rw"
+      - "prometheus-data:/prometheus:rw"
     command:
-      - "--storage.tsdb.retention.time=360d --config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=360d --web.enable-admin-api --config.file=/etc/prometheus/prometheus.yml"
 
 - name: Create the Prometheus server config based on template.
   template:
@@ -34,12 +46,18 @@
     dest: /var/lib/docker/volumes/prometheus-config/_data/prometheus.yml
 
 - name: Create the alerting rules template.
-  copy :
+  copy:
     src: alerting.yml.j2
     dest: /var/lib/docker/volumes/prometheus-config/_data/alerting.yml
 
 - name: Make sure the permissions are correct for the Docker Volume. Again, in case it changed when pulling the container.
   file:
     path: /var/lib/docker/volumes/prometheus-config/_data/
+    owner: nobody
+    group: nogroup
+
+- name: Make sure the permissions are correct for the Docker Volume.
+  file:
+    path: /var/lib/docker/volumes/prometheus-data
     owner: nobody
     group: nogroup
