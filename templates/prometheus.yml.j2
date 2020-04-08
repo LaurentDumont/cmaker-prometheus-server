@@ -97,3 +97,8 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 10.10.99.9:8080  # PVE exporter.
+
+  - job_name: 'fah-exporter'
+    static_configs:
+        - targets:
+            - fah-exporter.cmaker.studio
